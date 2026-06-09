@@ -1,0 +1,20 @@
+{
+  "short_name": "Playwright RWA",
+  "name": "Canaan Playwright Real World App Migration",
+  "icons": [
+    {
+      "src": "canaan_migration_logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "canaan_migration_logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
