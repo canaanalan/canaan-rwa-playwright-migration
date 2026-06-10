@@ -95,6 +95,8 @@ Key Playwright helpers live in [playwright/fixtures](./playwright/fixtures):
 
 The custom reporter lives in [playwright/reporters/reliabilityReporter.ts](./playwright/reporters/reliabilityReporter.ts).
 
+➡️ [Jump to Reliability Reports](#reliability-reports)
+
 It produces Markdown and JSON summaries under `playwright/reports/`, including:
 
 - total, passed, failed, flaky, skipped, and retried counts
@@ -220,19 +222,74 @@ cd playwright
 npm run test -- tests/ui/auth.spec.ts --project=ui --debug --workers=1
 ```
 
-## What Changed From The Original RWA
+<a id="reliability-reports"></a>
 
-This repo intentionally diverges from the upstream Cypress RWA in a few ways:
+# Reliability Reports
 
-- Playwright API/UI coverage has been added
-- GraphQL app-owned code was removed
-- CircleCI and Cypress Cloud workflows were removed
-- GitHub Actions is now the main CI path
-- generated coverage/test artifacts are ignored/cleaned
-- visual design and branding were personalized
-- a custom reliability reporter was added
+The following reports are generated from successful GitHub Actions runs and are intended to provide visibility into execution performance, test stability, retry behavior, and failure trends.
 
+---
+
+## API Reliability Report
+
+Status: **Passed**
+Duration: **8.1s**
+Tests: **49**
+Failures: **0**
+Flaky Tests: **0**
+
+### Reliability KPIs
+
+| Total | Passed | Failed | Flaky | Skipped | Retried |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 49 | 49 | 0 | 0 | 0 | 0 |
+
+### Slowest Tests
+
+| Project | Test | File | Duration |
+| --- | --- | --- | ---: |
+| api | GET /bankAccounts returns accounts for authenticated user | tests/api/bank-accounts.api.spec.ts | 229ms |
+| api | POST /login logs in as a user | tests/api/users.api.spec.ts | 185ms |
+| api | POST /users creates a new user | tests/api/users.api.spec.ts | 179ms |
+| api | POST /users creates a user with account balance | tests/api/users.api.spec.ts | 179ms |
+| api | POST /bankAccounts creates a new bank account | tests/api/bank-accounts.api.spec.ts | 168ms |
+
+**Failures:** None
+
+**Flaky Candidates:** None
+
+---
+
+## UI Reliability Report
+
+Status: **Passed**
+Duration: **56.1s**
+Tests: **24**
+Failures: **0**
+Flaky Tests: **0**
+
+### Reliability KPIs
+
+| Total | Passed | Failed | Flaky | Skipped | Retried |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 24 | 24 | 0 | 0 | 0 | 0 |
+
+### Slowest Tests
+
+| Project | Test | File | Duration |
+| --- | --- | --- | ---: |
+| ui | User Sign-up and Login | tests/ui/auth.spec.ts | 2.8s |
+| ui | Validation errors and disabled submit buttons | tests/ui/new-transaction.spec.ts | 2.8s |
+| ui | Transaction payment flow | tests/ui/new-transaction.spec.ts | 2.7s |
+| ui | Transaction request flow | tests/ui/new-transaction.spec.ts | 2.6s |
+| ui | Feed switching | tests/ui/transaction-feeds.spec.ts | 2.6s |
+
+**Failures:** None
+
+**Flaky Candidates:** None
+
+---
 
 ## Credit
 
-This project is based on the Cypress Real World App. The original application provided by them, this repo is my Playwright migration, reliability, and QA automation architecture showcase.
+This project is a rework based on the Cypress Real World App here https://github.com/cypress-io/cypress-realworld-app. This repo is primarily a Playwright migration, adding reliability, new pipelines, test authentication, etc.. as a QA automation architecture showcase. 
