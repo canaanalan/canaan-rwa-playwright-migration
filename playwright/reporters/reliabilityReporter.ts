@@ -18,6 +18,13 @@ type ReliabilitySummary = {
   generatedAt: string;
   status: FullResult["status"];
   durationMs: number;
+  ci: {
+    provider: string;
+    runId?: string;
+    runAttempt?: string;
+    sha?: string;
+    ref?: string;
+  };
   totals: {
     total: number;
     passed: number;
@@ -28,6 +35,7 @@ type ReliabilitySummary = {
   };
   slowest: ReliabilityTestSummary[];
   failures: ReliabilityTestSummary[];
+  flakyCandidates: ReliabilityTestSummary[];
 };
 
 type ReliabilityTestSummary = {
@@ -91,6 +99,13 @@ class ReliabilityReporter implements Reporter {
       generatedAt: new Date().toISOString(),
       status: result.status,
       durationMs: Date.now() - this.startTime,
+      ci: {
+        provider: process.env.GITHUB_ACTIONS ? "github-actions" : "local",
+        ...(process.env.GITHUB_RUN_ID ? { runId: process.env.GITHUB_RUN_ID } : {}),
+        ...(process.env.GITHUB_RUN_ATTEMPT ? { runAttempt: process.env.GITHUB_RUN_ATTEMPT } : {}),
+        ...(process.env.GITHUB_SHA ? { sha: process.env.GITHUB_SHA } : {}),
+        ...(process.env.GITHUB_REF_NAME ? { ref: process.env.GITHUB_REF_NAME } : {}),
+      },
       totals: {
         total: tests.length,
         passed: passed.length,
@@ -101,6 +116,7 @@ class ReliabilityReporter implements Reporter {
       },
       slowest,
       failures: failed,
+      flakyCandidates: flaky.length > 0 ? flaky : retried,
     };
   }
 
@@ -135,6 +151,9 @@ class ReliabilityReporter implements Reporter {
       "",
       `Status: **${summary.status}**`,
       `Duration: **${formatDuration(summary.durationMs)}**`,
+      `Source: **${summary.ci.provider}**`,
+      "",
+      "## Reliability KPIs",
       "",
       "| Total | Passed | Failed | Flaky | Skipped | Retried |",
       "| ---: | ---: | ---: | ---: | ---: | ---: |",
@@ -149,6 +168,12 @@ class ReliabilityReporter implements Reporter {
       ...(summary.failures.length > 0
         ? tableFor(summary.failures)
         : ["No failing tests in this run."]),
+      "",
+      "## Flaky Candidates",
+      "",
+      ...(summary.flakyCandidates.length > 0
+        ? tableFor(summary.flakyCandidates)
+        : ["No flaky or retried tests in this run."]),
       "",
     ];
 

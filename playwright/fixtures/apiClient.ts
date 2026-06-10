@@ -12,6 +12,10 @@ export class ApiClient {
     return `${API_URL}/bankAccounts`;
   }
 
+  get healthPath() {
+    return `${API_URL}/health`;
+  }
+
   get bankTransfersPath() {
     return `${API_URL}/bankTransfers`;
   }
@@ -42,6 +46,10 @@ export class ApiClient {
 
   listBankAccounts() {
     return this.request.get(this.bankAccountsPath);
+  }
+
+  getHealth() {
+    return this.request.get(this.healthPath);
   }
 
   getBankAccount(id: string) {

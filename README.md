@@ -20,6 +20,7 @@ The base app comes from the Cypress Real World App. For this project, I reworked
 - Realistic handling of a shared lowdb JSON database
 - GitHub Actions pipeline for typecheck, unit tests, build, Playwright API, and Playwright UI
 - Custom Playwright reliability reporter with Markdown/JSON output
+- Lightweight backend health check for CI/app readiness smoke coverage
 - Incremental cleanup of legacy RWA repo noise
 - A practical portfolio example of senior SDET / QA automation ownership
 
@@ -39,6 +40,7 @@ API specs live in [playwright/tests/api](./playwright/tests/api):
 
 - bank accounts
 - bank transfers
+- health
 - comments
 - contacts
 - likes
@@ -98,12 +100,18 @@ It produces Markdown and JSON summaries under `playwright/reports/`, including:
 - total, passed, failed, flaky, skipped, and retried counts
 - slowest tests
 - failure summaries
+- flaky candidates
+- CI metadata when available
 - GitHub Step Summary output in CI
 
 In GitHub Actions, API and UI runs write separate artifacts:
 
 - `api-reliability-summary.md/json`
 - `ui-reliability-summary.md/json`
+
+### Operational Smoke Checks
+
+The backend exposes a lightweight `/health` endpoint with service status, environment, timestamp, and seeded data checks. Playwright validates it as part of the API suite so CI gets a fast signal that the app server is up and the test environment is ready before deeper workflow coverage matters.
 
 ## GitHub Actions
 
@@ -120,7 +128,8 @@ It currently runs:
 7. Playwright test typecheck
 8. Playwright API tests
 9. Playwright UI tests
-10. reliability report artifact upload
+10. reliability telemetry summary output
+11. reliability report artifact upload
 
 Node 22 is used in CI.
 
@@ -227,4 +236,3 @@ This repo intentionally diverges from the upstream Cypress RWA in a few ways:
 ## Credit
 
 This project is based on the Cypress Real World App. The original application provided by them, this repo is my Playwright migration, reliability, and QA automation architecture showcase.
-

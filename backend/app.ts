@@ -16,6 +16,7 @@ import commentRoutes from "./comment-routes";
 import notificationRoutes from "./notification-routes";
 import bankTransferRoutes from "./banktransfer-routes";
 import testDataRoutes from "./testdata-routes";
+import { getAllForEntity } from "./database";
 import { checkAuth0Jwt, verifyOktaToken, checkCognitoJwt, checkGoogleJwt } from "./helpers";
 import { frontendPort, getBackendPort } from "../src/utils/portUtils";
 
@@ -52,6 +53,23 @@ if (process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development") {
 }
 
 app.use(auth);
+
+app.get("/health", (req, res) => {
+  const users = getAllForEntity("users").length;
+  const transactions = getAllForEntity("transactions").length;
+
+  res.status(200).json({
+    status: "ok",
+    service: "canaan-rwa-backend",
+    environment: process.env.NODE_ENV ?? "development",
+    timestamp: new Date().toISOString(),
+    checks: {
+      database: "ok",
+      seededUsers: users,
+      seededTransactions: transactions,
+    },
+  });
+});
 
 /* istanbul ignore if */
 if (process.env.VITE_AUTH0) {

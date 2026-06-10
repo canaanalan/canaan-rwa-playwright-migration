@@ -62,14 +62,14 @@ export default defineConfig({
     {
       // Avoid nyc instrumentation here; it crashes in newer Node versions before tests start.
       command:
-        "yarn db:seed:dev && NODE_ENV=development yarn tsnode:not-instrumented --files backend/app.ts",
+        "corepack yarn db:seed:dev && NODE_ENV=development corepack yarn tsnode:not-instrumented --files backend/app.ts",
       cwd: "..",
       url: `${API_URL}/`,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
     {
-      command: "NODE_ENV=development yarn start:react",
+      command: "NODE_ENV=development corepack yarn start:react",
       cwd: "..",
       url: APP_URL,
       reuseExistingServer: !process.env.CI,

@@ -69,6 +69,19 @@ jobs:
         env:
           RELIABILITY_REPORT_NAME: ui-reliability-summary
 
+      - name: Print reliability telemetry summaries
+        if: always()
+        working-directory: playwright
+        run: |
+          if compgen -G "reports/*-reliability-summary.md" > /dev/null; then
+            for report in reports/*-reliability-summary.md; do
+              echo "===== ${report} ====="
+              cat "${report}"
+            done
+          else
+            echo "No reliability summaries were generated."
+          fi
+
       - name: Upload Playwright reliability reports
         if: always()
         uses: actions/upload-artifact@v4
