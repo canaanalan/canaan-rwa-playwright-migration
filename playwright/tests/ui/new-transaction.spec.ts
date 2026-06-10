@@ -38,9 +38,10 @@ test.describe("New Transaction", () => {
       page.locator("[data-test=transaction-create-submit-payment]").click(),
     ]);
 
-    await expect(page.locator("[data-test=alert-bar-success]")).toContainText(
-      "Transaction Submitted!"
-    );
+    await expect(
+      page.locator("[data-test=new-transaction-return-to-transactions]")
+    ).toBeVisible();
+    
     await expect(
       page.locator("[data-test=new-transaction-create-another-transaction]")
     ).toBeVisible();
