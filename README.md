@@ -75,7 +75,7 @@ Once that was stable, UI tests came next.
 
 The app uses lowdb with JSON files. Tests reseed the database frequently so each spec starts from known data.
 
-Because this is a shared local JSON database, Playwright API/UI suites use one worker in CI. That is intentional. Parallelism is great when the system supports it, shared mutable state isn't an ideal state for parallelization.
+Because this is a shared local JSON database, Playwright API/UI suites use one worker in CI. That is intentional. Parallelism is great when the system supports it, shared mutable state isn't ideal for parallelization.
 
 ### Fixtures
 
