@@ -10,6 +10,8 @@ Just showcasing QA automation at the system level: test architecture, app startu
 
 The base app comes from the Cypress Real World App. For this project, I reworked the original application, removed legacy surface area, and built a Playwright migration/reliability layer around it.
 
+<img width="860" height="573" alt="Screenshot 2026-06-10 at 1 20 44 AM" src="https://github.com/user-attachments/assets/56cc587f-0cf2-41f8-bbd5-a840528acec0" />
+
 ## What This Project Shows
 
 - Rebuilding the original Cypress coverage as Playwright API and UI automation without turning it into a syntax-only port
