@@ -69,13 +69,13 @@ API tests came first because they prove the boring-but-critical things:
 - lowdb state can be reset predictably
 - API helper patterns are worth extracting
 
-Once that was stable, UI tests became less mysterious. The browser layer could focus on user behavior instead of debugging whether the server, auth, or seed data was secretly on fire.
+Once that was stable, UI tests came next. 
 
 ### Shared Seeded State
 
-The app uses lowdb with JSON files under [data](./data). Tests reseed the database frequently so each spec starts from known data.
+The app uses lowdb with JSON files. Tests reseed the database frequently so each spec starts from known data.
 
-Because this is a shared local JSON database, Playwright API/UI suites use one worker in CI. That is intentional. Parallelism is great when the system supports it; pretending shared mutable state is parallel-safe is how flakes get invited to live rent-free.
+Because this is a shared local JSON database, Playwright API/UI suites use one worker in CI. That is intentional. Parallelism is great when the system supports it, shared mutable state isn't an ideal state for parallelization.
 
 ### Fixtures
 
@@ -86,7 +86,6 @@ Key Playwright helpers live in [playwright/fixtures](./playwright/fixtures):
 - [testData.ts](./playwright/fixtures/testData.ts): database seeding and seeded data lookup
 - [uiAuth.ts](./playwright/fixtures/uiAuth.ts): shared UI login helper for browser specs
 
-The fixture layer is intentionally small. Helpers were added when repeated behavior appeared, not because every test project needs a tiny framework empire.
 
 ## Custom Reliability Reporter
 
@@ -103,8 +102,6 @@ In GitHub Actions, API and UI runs write separate artifacts:
 
 - `api-reliability-summary.md/json`
 - `ui-reliability-summary.md/json`
-
-This is meant to make test results easier to inspect quickly, especially when a failure is not just "red test bad" but part of a reliability conversation.
 
 ## GitHub Actions
 
@@ -224,22 +221,8 @@ This repo intentionally diverges from the upstream Cypress RWA in a few ways:
 - visual design and branding were personalized
 - a custom reliability reporter was added
 
-Some legacy code still remains while migration decisions are being made:
-
-- third-party auth provider code is still present but not the current focus
-- Vitest remains because it covers backend/data logic that Playwright should not replace
-
-## Near-Term Backlog
-
-- Add backend `/health` and `/ready` endpoints
-- Wire readiness checks into CI or Playwright setup
-- Continue cleanup of external auth provider legacy code
-- Expand the custom reporter if useful, not just because shiny dashboards are tempting
 
 ## Credit
 
-This project is based on the Cypress Real World App. The original application provided the foundation; this repo is my Playwright migration, reliability, and QA automation architecture showcase.
+This project is based on the Cypress Real World App. The original application provided by them, this repo is my Playwright migration, reliability, and QA automation architecture showcase.
 
-## License
-
-The original Cypress Real World App is MIT licensed. This project keeps that license in place. See [LICENSE](./LICENSE).
