@@ -38,13 +38,7 @@ test.describe("New Transaction", () => {
       page.locator("[data-test=transaction-create-submit-payment]").click(),
     ]);
 
-    await expect(
-      page.locator("[data-test=new-transaction-return-to-transactions]")
-    ).toBeVisible();
-    
-    await expect(
-      page.locator("[data-test=new-transaction-create-another-transaction]")
-    ).toBeVisible();
+    await expectStepThreeConfirmation(page, payment.description);
 
     await page.locator("[data-test=new-transaction-return-to-transactions]").click();
     await page.locator("[data-test=nav-personal-tab]").click();
@@ -74,9 +68,7 @@ test.describe("New Transaction", () => {
       page.locator("[data-test=transaction-create-submit-request]").click(),
     ]);
 
-    await expect(page.locator("[data-test=alert-bar-success]")).toContainText(
-      "Transaction Submitted!"
-    );
+    await expectStepThreeConfirmation(page, request.description);
 
     await page.locator("[data-test=new-transaction-return-to-transactions]").click();
     await page.locator("[data-test=nav-personal-tab]").click();
@@ -112,4 +104,10 @@ async function selectContact(page: Page, contact: User) {
   const contactItem = page.locator(`[data-test=user-list-item-${contact.id}]`);
   await expect(contactItem).toBeVisible();
   await contactItem.click();
+}
+
+async function expectStepThreeConfirmation(page: Page, description: string) {
+  await expect(page.locator("[data-test=new-transaction-return-to-transactions]")).toBeVisible();
+  await expect(page.locator("[data-test=new-transaction-create-another-transaction]")).toBeVisible();
+  await expect(page.getByText(description)).toBeVisible();
 }
