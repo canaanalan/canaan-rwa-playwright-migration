@@ -101,7 +101,6 @@
     "express-validator": "6.15.0",
     "fuse.js": "6.5.3",
     "http-proxy-middleware": "0.19.1",
-    "husky": "7.0.4",
     "jsdom": "^22.1.0",
     "json": "11.0.0",
     "jwks-rsa": "2.0.5",
@@ -163,18 +162,11 @@
     "prestart:empty": "yarn db:seed:empty",
     "prebuild": "yarn types",
     "build": "vite build",
-    "codesandbox:start:api": "yarn tsnode:not-instrumented --files backend/app.ts",
-    "codesandbox:start": "NODE_ENV=development TSC_COMPILE_ON_ERROR=true concurrently \"vite\" yarn:start:api:codesandbox",
-    "postinstall": "husky install && patch-package",
+    "postinstall": "patch-package",
     "test:ci": "vitest --run"
   },
   "engines": {
     "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn types"
-    }
   },
   "browserslist": {
     "production": [

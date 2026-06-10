@@ -105,7 +105,6 @@
         "lowdb",
         "ncp",
         "jwks-rsa",
-        "husky",
         "fuse.js",
         "dotenv",
         "crossenv",

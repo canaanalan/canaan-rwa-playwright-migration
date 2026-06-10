@@ -100,6 +100,52 @@ const paymentScenarios: TransactionScenario[] = [
   },
 ];
 
+const cyberpunkUsers = [
+  { firstName: "Mara", lastName: "Vex", username: "mara_vex" },
+  { firstName: "Juno", lastName: "Byte", username: "juno_byte" },
+  { firstName: "Orin", lastName: "Kade", username: "orin_kade" },
+  { firstName: "Nyx", lastName: "Vale", username: "nyx_vale" },
+  { firstName: "Sable", lastName: "Quinn", username: "sable_quinn" },
+  { firstName: "Riven", lastName: "Knox", username: "riven_knox" },
+  { firstName: "Vega", lastName: "Cross", username: "vega_cross" },
+  { firstName: "Cyra", lastName: "Neon", username: "cyra_neon" },
+  { firstName: "Dax", lastName: "Rho", username: "dax_rho" },
+  { firstName: "Iona", lastName: "Flux", username: "iona_flux" },
+];
+
+const cyberpunkBankNames = [
+  "Neon Trust",
+  "Gridline Credit Union",
+  "Chrome Harbor Bank",
+  "Nova Ledger",
+  "Blackbox Savings",
+  "Circuit Federal",
+  "Signal Vault Bank",
+];
+
+const cyberpunkTransactionDescriptions = [
+  "Night market ramen",
+  "Drone repair",
+  "Synth jacket deposit",
+  "Rooftop courier fee",
+  "Arcade cabinet parts",
+  "Data vault rental",
+  "Neon sign maintenance",
+  "Transit pass refill",
+  "Cyberdeck tune-up",
+  "Alley clinic copay",
+];
+
+const cyberpunkComments = [
+  "Split looks right.",
+  "Sent before the grid rush.",
+  "Ping me if the amount is off.",
+  "Covering my half.",
+  "Cleared on my ledger.",
+  "Adding this to the night run.",
+  "Nice, signal received.",
+];
+
 export const getRandomTransactions = (baseCount: number, baseTransactions: Transaction[]) =>
   compact(
     uniqBy(
@@ -112,16 +158,18 @@ export const getUserAvatar = (identifier: string) => {
   return `https://avatars.dicebear.com/api/human/${identifier}.svg`;
 };
 
-export const createFakeUser = (): User => {
+export const createFakeUser = (index = 0): User => {
   const id = shortid();
+  const themedUser = cyberpunkUsers[index % cyberpunkUsers.length];
+
   return {
     id,
     uuid: faker.random.uuid(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    username: faker.internet.userName(),
+    firstName: themedUser.firstName,
+    lastName: themedUser.lastName,
+    username: themedUser.username,
     password: passwordHash,
-    email: faker.internet.email(),
+    email: `${themedUser.username}@neonledger.test`,
     phoneNumber: faker.phone.phoneNumberFormat(0),
     avatar: getUserAvatar(id),
     defaultPrivacyLevel: faker.helpers.randomize([
@@ -136,7 +184,7 @@ export const createFakeUser = (): User => {
 };
 
 // @ts-ignore
-export const createSeedUsers = () => times(() => createFakeUser(), userbaseSize);
+export const createSeedUsers = () => times((index: number) => createFakeUser(index), userbaseSize);
 
 export const createContact = (userId: User["id"], contactUserId: User["id"]) => ({
   id: shortid(),
@@ -177,19 +225,19 @@ export const createSeedContacts = (seedUsers: User[]) => {
 };
 
 export const createSeedBankAccounts = (seedUsers: User[]) =>
-  map((user: User): BankAccount => {
+  seedUsers.map((user: User, index): BankAccount => {
     return {
       id: shortid(),
       uuid: faker.random.uuid(),
       userId: user.id,
-      bankName: `${faker.company.companyName()} Bank`,
+      bankName: cyberpunkBankNames[index % cyberpunkBankNames.length],
       accountNumber: faker.finance.account(10),
       routingNumber: faker.finance.account(9),
       isDeleted: false,
       createdAt: faker.date.past(),
       modifiedAt: faker.date.recent(),
     };
-  })(seedUsers);
+  });
 
 // Transactions
 
@@ -204,6 +252,7 @@ export const createTransaction = (
   const modifiedAt = faker.date.recent();
 
   const status = faker.helpers.randomize([TransactionStatus.pending, TransactionStatus.complete]);
+  const description = faker.helpers.randomize(cyberpunkTransactionDescriptions);
 
   let requestStatus = "";
 
@@ -228,9 +277,7 @@ export const createTransaction = (
     uuid: faker.random.uuid(),
     source: account.id,
     amount: getFakeAmount(),
-    description: isPayment(type)
-      ? `Payment: ${senderId} to ${receiverId}`
-      : `Request: ${receiverId} to ${senderId}`,
+    description: isPayment(type) ? `Payment: ${description}` : `Request: ${description}`,
     privacyLevel: faker.helpers.randomize([
       DefaultPrivacyLevel.public,
       DefaultPrivacyLevel.private,
@@ -373,7 +420,7 @@ export const createSeedLikes = (seedUsers: User[], seedTransactions: Transaction
 export const createFakeComment = (userId: string, transactionId: string): Comment => ({
   id: shortid(),
   uuid: faker.random.uuid(),
-  content: faker.lorem.words(),
+  content: faker.helpers.randomize(cyberpunkComments),
   userId,
   transactionId,
   createdAt: faker.date.past(),
