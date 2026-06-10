@@ -33,7 +33,8 @@ const TransactionCreateContainer: React.FC<Props> = ({ authService, snackbarServ
   const [authState] = useActor(authService);
   const [, sendSnackbar] = useActor(snackbarService);
 
-  const [createTransactionState, sendCreateTransaction] = useMachine(createTransactionMachine);
+  const [createTransactionState, sendCreateTransaction, createTransactionService] =
+    useMachine(createTransactionMachine);
 
   const [usersState, sendUsers] = useMachine(usersMachine);
 
