@@ -6,7 +6,7 @@
 
 This is a portfolio project built around the Cypress Real World App, reworked into a Playwright-centered automation and reliability framework.
 
-Showcasing QA automation at the system level: test architecture, app startup reliability, seeded data, API-first migration, CI feedback, readable artifacts, and practical tradeoffs.
+Just showcasing QA automation at the system level: test architecture, app startup reliability, seeded data, API-first migration, CI feedback, readable artifacts, and practical tradeoffs. Not for practical use.
 
 The base app comes from the Cypress Real World App. For this project, I reworked the original application, removed legacy surface area, and built a Playwright migration/reliability layer around it.
 
