@@ -221,72 +221,79 @@ Debug one file:
 cd playwright
 npm run test -- tests/ui/auth.spec.ts --project=ui --debug --workers=1
 ```
-
 <a id="reliability-reports"></a>
 
-# Reliability Reports
+# Playwright Reliability Summary
 
-The following reports are generated from successful GitHub Actions runs and are intended to provide visibility into execution performance, test stability, retry behavior, and failure trends.
-
----
-
-## API Reliability Report
-
-Status: **Passed**
+Status: **passed**
 Duration: **8.1s**
-Tests: **49**
-Failures: **0**
-Flaky Tests: **0**
+Source: **github-actions**
 
-### Reliability KPIs
+## Reliability KPIs
 
 | Total | Passed | Failed | Flaky | Skipped | Retried |
 | ---: | ---: | ---: | ---: | ---: | ---: |
 | 49 | 49 | 0 | 0 | 0 | 0 |
 
-### Slowest Tests
+## Slowest Tests
 
-| Project | Test | File | Duration |
-| --- | --- | --- | ---: |
-| api | GET /bankAccounts returns accounts for authenticated user | tests/api/bank-accounts.api.spec.ts | 229ms |
-| api | POST /login logs in as a user | tests/api/users.api.spec.ts | 185ms |
-| api | POST /users creates a new user | tests/api/users.api.spec.ts | 179ms |
-| api | POST /users creates a user with account balance | tests/api/users.api.spec.ts | 179ms |
-| api | POST /bankAccounts creates a new bank account | tests/api/bank-accounts.api.spec.ts | 168ms |
+| Project | Test | File | Duration | Retries | Outcome |
+| --- | --- | --- | ---: | ---: | --- |
+| api | Bank Accounts API > GET /bankAccounts returns accounts for authenticated user | tests/api/bank-accounts.api.spec.ts | 229ms | 0 | expected |
+| api | Users API > POST /login logs in as a user | tests/api/users.api.spec.ts | 185ms | 0 | expected |
+| api | Users API > POST /users creates a new user | tests/api/users.api.spec.ts | 179ms | 0 | expected |
+| api | Users API > POST /users creates a new user with an account balance in cents | tests/api/users.api.spec.ts | 179ms | 0 | expected |
+| api | Bank Accounts API > POST /bankAccounts creates a new bank account | tests/api/bank-accounts.api.spec.ts | 168ms | 0 | expected |
+| api | Bank Accounts API > GET /bankAccounts/:bankAccountId returns a bank account | tests/api/bank-accounts.api.spec.ts | 165ms | 0 | expected |
+| api | Transactions API > GET /transactions/contacts returns contact transactions page one | tests/api/transactions.api.spec.ts | 157ms | 0 | expected |
+| api | Transactions API > GET /transactions/public returns public transactions | tests/api/transactions.api.spec.ts | 143ms | 0 | expected |
+| api | Transactions API > GET /transactions/contacts returns contact transactions page two | tests/api/transactions.api.spec.ts | 140ms | 0 | expected |
+| api | Transactions API > GET /transactions returns transactions for user by default | tests/api/transactions.api.spec.ts | 134ms | 0 | expected |
 
-**Failures:** None
+## Failures
 
-**Flaky Candidates:** None
+No failing tests in this run.
 
----
+## Flaky Candidates
 
-## UI Reliability Report
+No flaky or retried tests in this run.
 
-Status: **Passed**
+
+# Playwright Reliability Summary
+
+Status: **passed**
 Duration: **56.1s**
-Tests: **24**
-Failures: **0**
-Flaky Tests: **0**
+Source: **github-actions**
 
-### Reliability KPIs
+## Reliability KPIs
 
 | Total | Passed | Failed | Flaky | Skipped | Retried |
 | ---: | ---: | ---: | ---: | ---: | ---: |
 | 24 | 24 | 0 | 0 | 0 | 0 |
 
-### Slowest Tests
+## Slowest Tests
 
-| Project | Test | File | Duration |
-| --- | --- | --- | ---: |
-| ui | User Sign-up and Login | tests/ui/auth.spec.ts | 2.8s |
-| ui | Validation errors and disabled submit buttons | tests/ui/new-transaction.spec.ts | 2.8s |
-| ui | Transaction payment flow | tests/ui/new-transaction.spec.ts | 2.7s |
-| ui | Transaction request flow | tests/ui/new-transaction.spec.ts | 2.6s |
-| ui | Feed switching | tests/ui/transaction-feeds.spec.ts | 2.6s |
+| Project | Test | File | Duration | Retries | Outcome |
+| --- | --- | --- | ---: | ---: | --- |
+| ui | User Sign-up and Login > allows a visitor to sign up, onboard, and log out | tests/ui/auth.spec.ts | 2.8s | 0 | expected |
+| ui | New Transaction > displays validation errors and disables submit buttons | tests/ui/new-transaction.spec.ts | 2.8s | 0 | expected |
+| ui | New Transaction > submits a transaction payment | tests/ui/new-transaction.spec.ts | 2.7s | 0 | expected |
+| ui | New Transaction > submits a transaction request | tests/ui/new-transaction.spec.ts | 2.6s | 0 | expected |
+| ui | Transaction Feeds > switches between public, contacts, and personal feeds | tests/ui/transaction-feeds.spec.ts | 2.6s | 0 | expected |
+| ui | Notifications > renders an empty notifications state | tests/ui/notifications.spec.ts | 2.6s | 0 | expected |
+| ui | Notifications > marks a notification as read | tests/ui/notifications.spec.ts | 2.5s | 0 | expected |
+| ui | Transaction Feeds > toggles the side navigation drawer | tests/ui/transaction-feeds.spec.ts | 2.4s | 0 | expected |
+| ui | User Settings > updates first name, last name, email, and phone number | tests/ui/user-settings.spec.ts | 2.4s | 0 | expected |
+| ui | Notifications > renders notifications for the current user | tests/ui/notifications.spec.ts | 2.3s | 0 | expected |
 
-**Failures:** None
+## Failures
 
-**Flaky Candidates:** None
+No failing tests in this run.
+
+## Flaky Candidates
+
+No flaky or retried tests in this run.
+
 
 ---
 
