@@ -1,8 +1,10 @@
-import { expect, type APIRequestContext, type BrowserContext, type Page } from "@playwright/test";
+import { type APIRequestContext, type BrowserContext, type Page } from "@playwright/test";
 
 import type { User } from "../../src/models";
 import { defaultPassword } from "./auth";
 import { getTestData, seedDatabase } from "./testData";
+import { SideNav } from "../pages/SideNav";
+import { SignInPage } from "../pages/SignInPage";
 
 export async function loginSeededUser(
   page: Page,
@@ -17,19 +19,11 @@ export async function loginSeededUser(
 
   const users = await getTestData<User>(request, "users");
   const user = users[userIndex];
+  const signInPage = new SignInPage(page);
+  const sideNav = new SideNav(page);
 
-  await page.goto("/signin");
-  await page.locator("[data-test=signin-username] input").fill(user.username);
-  await page.locator("[data-test=signin-password] input").fill(defaultPassword);
-
-  await Promise.all([
-    page.waitForResponse((response) =>
-      response.url().includes("/login") && response.request().method() === "POST"
-    ),
-    page.locator("[data-test=signin-submit]").click(),
-  ]);
-
-  await expect(page.locator("[data-test=sidenav-username]")).toContainText(`@${user.username}`);
+  await signInPage.login(user.username, defaultPassword);
+  await sideNav.expectSignedInAs(user.username);
 
   return { user, users };
 }

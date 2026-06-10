@@ -17,6 +17,7 @@ The base app comes from the Cypress Real World App. For this project, I reworked
 - Rebuilding the original Cypress coverage as Playwright API and UI automation without turning it into a syntax-only port
 - API-first test strategy to validate auth, data seeding, environment config, and backend contracts before layering on browser workflows
 - Playwright fixtures for API clients, auth, test data, and shared UI login behavior
+- Page/component objects for repeated UI workflows without hiding test intent
 - Realistic handling of a shared lowdb JSON database
 - GitHub Actions pipeline for typecheck, unit tests, build, Playwright API, and Playwright UI
 - Custom Playwright reliability reporter with Markdown/JSON output
@@ -89,6 +90,8 @@ Key Playwright helpers live in [playwright/fixtures](./playwright/fixtures):
 - [auth.ts](./playwright/fixtures/auth.ts): API login helper and default password
 - [testData.ts](./playwright/fixtures/testData.ts): database seeding and seeded data lookup
 - [uiAuth.ts](./playwright/fixtures/uiAuth.ts): shared UI login helper for browser specs
+
+UI page/component objects live in [playwright/pages](./playwright/pages). They are used where interaction patterns repeat, such as sign in, side navigation, and the bank account form.
 
 
 ## Custom Reliability Reporter

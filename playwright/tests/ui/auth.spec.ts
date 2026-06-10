@@ -6,6 +6,9 @@ import { test, expect } from "@playwright/test";
 import type { User } from "../../../src/models";
 import { defaultPassword } from "../../fixtures/auth";
 import { getTestData, seedDatabase } from "../../fixtures/testData";
+import { BankAccountForm } from "../../pages/BankAccountForm";
+import { SideNav } from "../../pages/SideNav";
+import { SignInPage } from "../../pages/SignInPage";
 
 test.describe("User Sign-up and Login", () => {
   test.beforeEach(async ({ context, page, request }) => {
@@ -16,71 +19,46 @@ test.describe("User Sign-up and Login", () => {
   });
 
   test("redirects unauthenticated user to signin page", async ({ page }) => {
+    const signInPage = new SignInPage(page);
+
     await page.goto("/personal");
 
-    await expect(page).toHaveURL(/\/signin$/);
-    await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
+    await signInPage.expectLoaded();
   });
 
   test("logs in and logs out as a seeded user", async ({ page, request }) => {
     const users = await getTestData<User>(request, "users");
     const user = users[0];
+    const signInPage = new SignInPage(page);
+    const sideNav = new SideNav(page);
 
-    await page.goto("/signin");
-    await page.locator("[data-test=signin-username] input").fill(user.username);
-    await page.locator("[data-test=signin-password] input").fill(defaultPassword);
-
-    await Promise.all([
-      page.waitForResponse((response) =>
-        response.url().includes("/login") && response.request().method() === "POST"
-      ),
-      page.locator("[data-test=signin-submit]").click(),
-    ]);
+    await signInPage.login(user.username, defaultPassword);
 
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.locator("[data-test=sidenav-username]")).toContainText(`@${user.username}`);
+    await sideNav.expectSignedInAs(user.username);
     await expect(page.locator("[data-test=nav-top-new-transaction]")).toBeVisible();
 
-    await page.locator("[data-test=sidenav-signout]").click();
+    await sideNav.signOut();
 
-    await expect(page).toHaveURL(/\/signin$/);
-    await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
+    await signInPage.expectLoaded();
   });
 
   test("displays login validation errors", async ({ page }) => {
-    await page.goto("/signin");
+    const signInPage = new SignInPage(page);
 
-    await page.locator("[data-test=signin-username] input").fill("User");
-    await page.locator("[data-test=signin-username] input").clear();
-    await page.locator("[data-test=signin-username] input").blur();
+    await signInPage.goto();
+    await signInPage.expectRequiredUsernameValidation();
+    await signInPage.expectShortPasswordValidation();
 
-    await expect(page.locator("#username-helper-text")).toContainText("Username is required");
-
-    await page.locator("[data-test=signin-password] input").fill("abc");
-    await page.locator("[data-test=signin-password] input").blur();
-
-    await expect(page.locator("#password-helper-text")).toContainText(
-      "Password must contain at least 4 characters"
-    );
-    await expect(page.locator("[data-test=signin-submit]")).toBeDisabled();
+    await expect(signInPage.submitButton).toBeDisabled();
   });
 
   test("displays an error for invalid credentials", async ({ page }) => {
-    await page.goto("/signin");
+    const signInPage = new SignInPage(page);
 
-    await page.locator("[data-test=signin-username] input").fill("invalidUserName");
-    await page.locator("[data-test=signin-password] input").fill("invalidPa$$word");
+    await signInPage.login("invalidUserName", "invalidPa$$word");
 
-    await Promise.all([
-      page.waitForResponse((response) =>
-        response.url().includes("/login") && response.request().method() === "POST"
-      ),
-      page.locator("[data-test=signin-submit]").click(),
-    ]);
-
-    await expect(page.locator("[data-test=signin-error]")).toHaveText(
-      "Username or password is invalid"
-    );
+    await signInPage.expectInvalidCredentialsError();
   });
 
   test("allows a visitor to sign up, onboard, and log out", async ({ page }) => {
@@ -90,6 +68,9 @@ test.describe("User Sign-up and Login", () => {
       username: `PainterJoy${Date.now()}`,
       password: "s3cret",
     };
+    const signInPage = new SignInPage(page);
+    const sideNav = new SideNav(page);
+    const bankAccountForm = new BankAccountForm(page);
 
     await page.goto("/signup");
     await expect(page.locator("[data-test=signup-title]")).toBeVisible();
@@ -109,15 +90,7 @@ test.describe("User Sign-up and Login", () => {
 
     await expect(page).toHaveURL(/\/signin$/);
 
-    await page.locator("[data-test=signin-username] input").fill(userInfo.username);
-    await page.locator("[data-test=signin-password] input").fill(userInfo.password);
-
-    await Promise.all([
-      page.waitForResponse((response) =>
-        response.url().includes("/login") && response.request().method() === "POST"
-      ),
-      page.locator("[data-test=signin-submit]").click(),
-    ]);
+    await signInPage.login(userInfo.username, userInfo.password);
 
     await expect(page.locator("[data-test=user-onboarding-dialog]")).toBeVisible();
     await expect(page.locator("[data-test=list-skeleton]")).toHaveCount(0);
@@ -129,16 +102,11 @@ test.describe("User Sign-up and Login", () => {
       "Create Bank Account"
     );
 
-    await page.locator("[data-test=bankaccount-bankName-input] input").fill("The Best Bank");
-    await page.locator("[data-test=bankaccount-accountNumber-input] input").fill("123456789");
-    await page.locator("[data-test=bankaccount-routingNumber-input] input").fill("987654321");
-
-    await Promise.all([
-      page.waitForResponse((response) =>
-        response.url().includes("/bankAccounts") && response.request().method() === "POST"
-      ),
-      page.locator("[data-test=bankaccount-submit]").click(),
-    ]);
+    await bankAccountForm.create({
+      bankName: "The Best Bank",
+      routingNumber: "987654321",
+      accountNumber: "123456789",
+    });
 
     await expect(page.locator("[data-test=user-onboarding-dialog-title]")).toContainText(
       "Finished"
@@ -151,7 +119,7 @@ test.describe("User Sign-up and Login", () => {
 
     await expect(page.locator("[data-test=transaction-list]")).toBeVisible();
 
-    await page.locator("[data-test=sidenav-signout]").click();
+    await sideNav.signOut();
 
     await expect(page).toHaveURL(/\/signin$/);
   });
