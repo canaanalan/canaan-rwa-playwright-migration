@@ -6,3 +6,6 @@ coverage/
 .vite/
 aws-exports-es5.js
 src/aws-exports.js
+aws-exports-es5 *.js
+data/database *.json
+src/aws-exports *.js
