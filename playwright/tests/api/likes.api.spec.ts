@@ -27,7 +27,7 @@ test.describe("Likes API", () => {
 
   test("GET /likes/:transactionId returns likes for a transaction", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listLikes(transactionId);
+    const response = await api.likes.list(transactionId);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -36,7 +36,7 @@ test.describe("Likes API", () => {
 
   test("POST /likes/:transactionId creates a like", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createLike(transactionId, { transactionId });
+    const response = await api.likes.create(transactionId, { transactionId });
 
     expect(response.status()).toBe(200);
   });

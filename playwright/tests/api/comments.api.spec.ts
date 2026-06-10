@@ -27,7 +27,7 @@ test.describe("Comments API", () => {
 
   test("GET /comments/:transactionId returns comments for a transaction", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listComments(transactionId);
+    const response = await api.comments.list(transactionId);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -36,7 +36,7 @@ test.describe("Comments API", () => {
 
   test("POST /comments/:transactionId creates a comment", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createComment(transactionId, {
+    const response = await api.comments.create(transactionId, {
       content: "This is my comment",
     });
 

@@ -37,7 +37,7 @@ test.describe("Notifications API", () => {
 
   test("GET /notifications returns notifications for a user", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listNotifications();
+    const response = await api.notifications.list();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -48,7 +48,7 @@ test.describe("Notifications API", () => {
     request,
   }) => {
     const api = new ApiClient(request);
-    const response = await api.createNotifications({
+    const response = await api.notifications.createBulk({
       items: [
         {
           type: "payment",
@@ -76,7 +76,7 @@ test.describe("Notifications API", () => {
 
   test("PATCH /notifications/:notificationId updates a notification", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.updateNotification(notificationId, { isRead: true });
+    const response = await api.notifications.update(notificationId, { isRead: true });
 
     expect(response.status()).toBe(204);
   });
@@ -85,7 +85,7 @@ test.describe("Notifications API", () => {
     request,
   }) => {
     const api = new ApiClient(request);
-    const response = await api.updateNotification(notificationId, {
+    const response = await api.notifications.update(notificationId, {
       notANotificationField: "not a notification field",
     });
     const body = await response.json();

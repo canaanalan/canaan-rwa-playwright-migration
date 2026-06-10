@@ -29,7 +29,7 @@ test.describe("Bank Accounts API", () => {
 
   test("GET /bankAccounts returns accounts for authenticated user", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listBankAccounts();
+    const response = await api.bankAccounts.list();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -39,7 +39,7 @@ test.describe("Bank Accounts API", () => {
   test("GET /bankAccounts/:bankAccountId returns a bank account", async ({ request }) => {
     const api = new ApiClient(request);
     const bankAccountId = bankAccounts[0].id;
-    const response = await api.getBankAccount(bankAccountId);
+    const response = await api.bankAccounts.get(bankAccountId);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -48,7 +48,7 @@ test.describe("Bank Accounts API", () => {
 
   test("POST /bankAccounts creates a new bank account", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createBankAccount({
+    const response = await api.bankAccounts.create({
       bankName: `${faker.company.companyName()} Bank`,
       accountNumber: faker.finance.account(10),
       routingNumber: faker.finance.account(9),
@@ -63,7 +63,7 @@ test.describe("Bank Accounts API", () => {
   test("DELETE /bankAccounts/:bankAccountId deletes a bank account", async ({ request }) => {
     const api = new ApiClient(request);
     const bankAccountId = bankAccounts[0].id;
-    const response = await api.deleteBankAccount(bankAccountId);
+    const response = await api.bankAccounts.delete(bankAccountId);
 
     expect(response.status()).toBe(200);
   });

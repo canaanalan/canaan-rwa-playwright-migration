@@ -25,7 +25,7 @@ test.describe("Users API", () => {
 
   test("GET /users returns users", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listUsers();
+    const response = await api.users.list();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -34,7 +34,7 @@ test.describe("Users API", () => {
 
   test("GET /users/:userId returns a user", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.getUser(authenticatedUser.id);
+    const response = await api.users.get(authenticatedUser.id);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -43,7 +43,7 @@ test.describe("Users API", () => {
 
   test("GET /users/:userId returns validation error for invalid userId", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.getUser("1234");
+    const response = await api.users.get("1234");
     const body = await response.json();
 
     expect(response.status()).toBe(422);
@@ -52,7 +52,7 @@ test.describe("Users API", () => {
 
   test("GET /users/profile/:username returns a public user profile", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.getUserProfile(authenticatedUser.username);
+    const response = await api.users.getProfile(authenticatedUser.username);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -66,7 +66,7 @@ test.describe("Users API", () => {
 
   test("GET /users/search returns users by email", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.searchUsers(searchUser.email);
+    const response = await api.users.search(searchUser.email);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -75,7 +75,7 @@ test.describe("Users API", () => {
 
   test("GET /users/search returns users by phone number", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.searchUsers(searchUser.phoneNumber);
+    const response = await api.users.search(searchUser.phoneNumber);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -84,7 +84,7 @@ test.describe("Users API", () => {
 
   test("GET /users/search returns users by username", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.searchUsers(searchUser.username);
+    const response = await api.users.search(searchUser.username);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -94,7 +94,7 @@ test.describe("Users API", () => {
   test("POST /users creates a new user", async ({ request }) => {
     const api = new ApiClient(request);
     const firstName = faker.name.firstName();
-    const response = await api.createUser({
+    const response = await api.users.create({
       firstName,
       lastName: faker.name.lastName(),
       username: faker.internet.userName(),
@@ -112,7 +112,7 @@ test.describe("Users API", () => {
   test("POST /users creates a new user with an account balance in cents", async ({ request }) => {
     const api = new ApiClient(request);
     const firstName = faker.name.firstName();
-    const response = await api.createUser({
+    const response = await api.users.create({
       firstName,
       lastName: faker.name.lastName(),
       username: faker.internet.userName(),
@@ -131,7 +131,7 @@ test.describe("Users API", () => {
 
   test("POST /users returns validation error for invalid field", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createUser({
+    const response = await api.users.create({
       notAUserField: "not a user field",
     });
     const body = await response.json();
@@ -142,7 +142,7 @@ test.describe("Users API", () => {
 
   test("PATCH /users/:userId updates a user", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.updateUser(authenticatedUser.id, {
+    const response = await api.users.update(authenticatedUser.id, {
       firstName: faker.name.firstName(),
     });
 
@@ -151,7 +151,7 @@ test.describe("Users API", () => {
 
   test("PATCH /users/:userId returns validation error for invalid field", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.updateUser(authenticatedUser.id, {
+    const response = await api.users.update(authenticatedUser.id, {
       notAUserField: "not a user field",
     });
     const body = await response.json();

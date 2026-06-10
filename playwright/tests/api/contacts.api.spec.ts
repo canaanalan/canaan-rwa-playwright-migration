@@ -29,7 +29,7 @@ test.describe("Contacts API", () => {
 
   test("GET /contacts/:username returns contacts by username", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listContacts(authenticatedUser.username);
+    const response = await api.contacts.list(authenticatedUser.username);
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -38,7 +38,7 @@ test.describe("Contacts API", () => {
 
   test("POST /contacts creates a contact", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createContact({ contactUserId: contact.contactUserId });
+    const response = await api.contacts.create({ contactUserId: contact.contactUserId });
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -48,7 +48,7 @@ test.describe("Contacts API", () => {
 
   test("POST /contacts returns validation error for invalid contactUserId", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createContact({ contactUserId: "1234" });
+    const response = await api.contacts.create({ contactUserId: "1234" });
     const body = await response.json();
 
     expect(response.status()).toBe(422);
@@ -57,7 +57,7 @@ test.describe("Contacts API", () => {
 
   test("DELETE /contacts/:contactId deletes a contact", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.deleteContact(contact.id);
+    const response = await api.contacts.delete(contact.id);
 
     expect(response.status()).toBe(200);
   });

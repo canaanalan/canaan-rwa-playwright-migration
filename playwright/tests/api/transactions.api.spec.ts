@@ -42,7 +42,7 @@ test.describe("Transactions API", () => {
 
   test("GET /transactions returns transactions for user by default", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listTransactions();
+    const response = await api.transactions.list();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -51,7 +51,7 @@ test.describe("Transactions API", () => {
 
   test("GET /transactions returns pending request transactions for user", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listTransactions({ requestStatus: "pending" });
+    const response = await api.transactions.list({ requestStatus: "pending" });
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -62,7 +62,7 @@ test.describe("Transactions API", () => {
     request,
   }) => {
     const api = new ApiClient(request);
-    const response = await api.listTransactions({
+    const response = await api.transactions.list({
       requestStatus: "pending",
       dateRangeStart: new Date("Jan 01 2018").toISOString(),
       dateRangeEnd: new Date("Dec 05 2030").toISOString(),
@@ -75,7 +75,7 @@ test.describe("Transactions API", () => {
 
   test("GET /transactions/contacts returns contact transactions page one", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listContactTransactions();
+    const response = await api.transactions.listContacts();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -84,7 +84,7 @@ test.describe("Transactions API", () => {
 
   test("GET /transactions/contacts returns contact transactions page two", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listContactTransactions({ page: 2 });
+    const response = await api.transactions.listContacts({ page: 2 });
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -93,7 +93,7 @@ test.describe("Transactions API", () => {
 
   test("GET /transactions/public returns public transactions", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.listPublicTransactions();
+    const response = await api.transactions.listPublic();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
@@ -102,7 +102,7 @@ test.describe("Transactions API", () => {
 
   test("POST /transactions creates a new payment", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createTransaction({
+    const response = await api.transactions.create({
       transactionType: "payment",
       source: bankAccountId,
       receiverId: receiver.id,
@@ -120,7 +120,7 @@ test.describe("Transactions API", () => {
 
   test("POST /transactions creates a new request", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.createTransaction({
+    const response = await api.transactions.create({
       transactionType: "request",
       source: bankAccountId,
       receiverId: receiver.id,
@@ -138,7 +138,7 @@ test.describe("Transactions API", () => {
 
   test("PATCH /transactions/:transactionId updates a transaction", async ({ request }) => {
     const api = new ApiClient(request);
-    const response = await api.updateTransaction(transactionId, {
+    const response = await api.transactions.update(transactionId, {
       requestStatus: "rejected",
     });
 
@@ -149,7 +149,7 @@ test.describe("Transactions API", () => {
     request,
   }) => {
     const api = new ApiClient(request);
-    const response = await api.updateTransaction(transactionId, {
+    const response = await api.transactions.update(transactionId, {
       notATransactionField: "not a transaction field",
     });
     const body = await response.json();

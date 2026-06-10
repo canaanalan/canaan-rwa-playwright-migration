@@ -6,7 +6,7 @@ test.describe("Health API", () => {
   test("reports service readiness and seeded data checks", async ({ request }) => {
     const api = new ApiClient(request);
 
-    const response = await api.getHealth();
+    const response = await api.health.get();
     const body = await response.json();
 
     expect(response.status()).toBe(200);
