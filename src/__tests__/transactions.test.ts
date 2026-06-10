@@ -69,10 +69,16 @@ describe("Transactions", () => {
 
   it("should retrieve a list of transactions for a users contacts - between date range", () => {
     const userToLookup: User = getAllUsers()[0];
+    const contactsTransactions = getTransactionsForUserContacts(userToLookup.id);
+    const transactionDates = contactsTransactions
+      .map((transaction) => new Date(transaction.createdAt).getTime())
+      .sort((a, b) => a - b);
+
     const result: Transaction[] = getTransactionsForUserContacts(userToLookup.id, {
-      dateRangeStart: new Date("Mar 09 2023"),
-      dateRangeEnd: new Date("Mar 09 2024"),
+      dateRangeStart: new Date(transactionDates[0]),
+      dateRangeEnd: new Date(transactionDates[transactionDates.length - 1]),
     });
+
     expect(result.length).toBeGreaterThan(1);
   });
 
